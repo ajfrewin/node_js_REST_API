@@ -7,20 +7,21 @@ const app = express();
 // import middlewear
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
-const mongoose = require('mongoose')
-mongoose.Promise = global.Promise
+const mongoose = require('mongoose');
+mongoose.Promise = global.Promise;
 
 // project-specific routes
 const productRoutes = require('./api/routes/products');
 const orderRoutes = require('./api/routes/orders');
 
-mongoose.connect("mongodb+srv://shopAdmin:shopAdminPwd@node-rest-shop-n2c91.mongodb.net/test?retryWrites=true&w=majority",
+mongoose.connect("mongodb+srv://shopAdmin:asd@node-rest-shop-n2c91.mongodb.net/test?retryWrites=true&w=majority",
     {
         useNewUrlParser: true,
         useUnifiedTopology: true
     }
 );
 
+// Prints message upon succesfull db connection
 let db = mongoose.connection;
 db.once('open', () => console.log('connected to db'));
 
