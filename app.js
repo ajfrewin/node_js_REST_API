@@ -8,7 +8,7 @@ const app = express();
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-mongoose.Promise = global.Promise;
+
 
 // project-specific routes
 const productRoutes = require('./api/routes/products');
@@ -18,15 +18,19 @@ mongoose.connect("mongodb+srv://shopAdmin:asd@node-rest-shop-n2c91.mongodb.net/t
     {
         useNewUrlParser: true,
         useUnifiedTopology: true
-    }
-);
+    })
+    .catch(err => console.log(err));
+
+mongoose.Promise = global.Promise;
+
 
 // Prints message upon succesfull db connection
 let db = mongoose.connection;
 db.once('open', () => console.log('connected to db'));
 
 // configure middlewear
-app.use(morgan('dev'))
+app.use(morgan('dev'));
+app.use('/uploads', express.static('uploads'));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
