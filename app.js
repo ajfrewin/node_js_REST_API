@@ -13,6 +13,7 @@ const mongoose = require('mongoose');
 // project-specific routes
 const productRoutes = require('./api/routes/products');
 const orderRoutes = require('./api/routes/orders');
+const userRoutes = require('./api/routes/user')
 
 mongoose.connect("mongodb+srv://shopAdmin:asd@node-rest-shop-n2c91.mongodb.net/test?retryWrites=true&w=majority",
     {
@@ -34,6 +35,7 @@ app.use('/uploads', express.static('uploads'));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
+
 // Handle CORS errors
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", '*');
@@ -48,6 +50,7 @@ app.use((req, res, next) => {
 // Routes to handle requests
 app.use('/products', productRoutes);
 app.use('/orders', orderRoutes);
+app.use("/user", userRoutes)
 
 // Handle any request that reaches this line (aka page not found)
 app.use((req, res, next) => {

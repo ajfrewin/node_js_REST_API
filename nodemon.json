@@ -1,5 +1,6 @@
 {
     "env": {
-        "MONGO_ATLAS_PW" : "shopAdminPwd"
+        "MONGO_ATLAS_PW" : "asd",
+        "JWT_KEY": "secret"
     }
 }
