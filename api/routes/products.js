@@ -2,59 +2,50 @@
 
 const express = require('express');
 const router = express.Router();
-const mongoose = require('mongoose');
-const Product = require('../models/product');
+const multer = require('multer');
+const checkAuth = require('../middleware/check-auth')
+
+const ProductsController = require('../controllers/products');
+
+const storage = multer.diskStorage({
+  destination: function(req, file, cb) {
+    cb(null, './uploads/');
+  },
+  filename: function(req, file, cb) {
+    cb(null, Date(Date.now()) + file.originalname);
+  }
+});
+
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype === 'image/jpeg' || filemimetype ==='image/png') {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+
+const upload = multer({
+  storage: storage, 
+  limits: {
+    filesize: 1024 * 1024 * 5
+  },
+  fileFilter: fileFilter
+});
+
 
 // get request for url
-router.get('/', (req, res, next) => {
-  res.status(200).json({
-    message: 'Handling GET requests to /products'
-  });
-});
+router.get('/', ProductsController.products_get_all);
 
 // post request
-router.post('/', (req, res, next) => {
-  const product = new Product({
-    _id: new mongoose.Types.ObjectId(),
-    name: req.body.name,
-    price: req.body.price
-  });
-  product.save().then(result => {
-      console.log(result);
-    })
-    .catch(err => console.log(err));
-  res.status(201).json({
-    message: 'Handling POST requests to /products',
-    createdProduct: product
-  });
-});
+router.post('/', checkAuth, upload.single('productImage'),  ProductsController.products_create_product);
 
 // Get by ID request
-router.get('/:productId', (req, res, next) => {
-  const id = req.params.productId;
-  Product.findById(id)
-    .then(doc => {
-      console.log(doc);
-      res.status(200).json(doc);
-    })
-    .catch(err => {
-      console.log(err)
-      res.status(500).json({error:err});
-    });
-});
+router.get('/:productId', ProductsController.products_get_product);
 
 // patch requests
-router.patch('/:productId', (req, res, next) => {
-  res.status(200).json({
-    message: 'Updated product!'
-  })
-});
+router.patch('/:productId', checkAuth, ProductsController.products_edit_product);
 
 // delete requests
-router.delete('/:productId', (req, res, next) => {
-  res.status(200).json({
-    message: 'Deleted product!'
-  })
-});
+router.delete('/:productId', checkAuth, ProductsController.products_delete_product);
 
-module.exports = router
+module.exports = router;
